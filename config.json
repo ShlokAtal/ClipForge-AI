@@ -1,0 +1,24 @@
+{
+    "app_name": "ClipForge AI",
+    "max_batch_size": 10,
+    "processing_mode": "sequential",
+    "transcription":
+    {
+        "model": "small",
+        "device": "auto",
+        "compute_type": "int8"
+    },
+    "paths":
+    {
+        "input": "media/input",
+        "clips": "output/clips",
+        "subtitles": "output/subtitles",
+        "metadata": "output/metadata",
+        "jobs": "data/jobs",
+        "temp": "temp",
+        "logs": "logs"
+    },
+    "skip_existing_outputs": true,
+    "automatic_upload": false,
+    "telemetry": false
+}

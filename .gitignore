@@ -1,0 +1,42 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+secrets.toml
+
+# Logs and temporary files
+logs/
+temp/
+*.log
+
+# Downloaded media and generated output
+media/input/*
+!media/input/.gitkeep
+output/clips/*
+!output/clips/.gitkeep
+output/subtitles/*
+!output/subtitles/.gitkeep
+output/metadata/*
+!output/metadata/.gitkeep
+
+# Job data
+data/jobs/*
+!data/jobs/.gitkeep
+
+# Editor and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
