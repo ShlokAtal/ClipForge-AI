@@ -20,7 +20,6 @@ def format_srt_timestamp(seconds):
         f"{milliseconds:03}"
     )
 
-
 def transcribe_to_srt(
     video_path,
     output_dir,
