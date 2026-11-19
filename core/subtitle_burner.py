@@ -316,6 +316,7 @@ def burn_subtitles(
     vertical_margin=40,
     bold=True,
     output_format="original",
+    output_name=None,
 ):
     """Permanently burn SRT subtitles into an MP4 video.
 
@@ -386,7 +387,8 @@ def burn_subtitles(
             f"Could not create output directory: {error}"
         ) from error
 
-    output_path = output_dir / f"{video_path.stem}_subtitled.mp4"
+    stem = output_name or f"{video_path.stem}_subtitled"
+    output_path = output_dir / f"{stem}.mp4"
 
     if output_path.resolve() == video_path:
         raise SubtitleBurnError(

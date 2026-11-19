@@ -1,0 +1,17 @@
+# Streamlit settings for ClipForge AI. Launched from run.bat in this folder.
+
+[server]
+# Allow large source videos to be selected for local processing (in MB).
+maxUploadSize = 4096
+# Local tool: do not expose the app beyond this computer by default.
+address = "localhost"
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "dark"
+primaryColor = "#7185ff"
+backgroundColor = "#0b1020"
+secondaryBackgroundColor = "#111a2b"
+textColor = "#edf2ff"

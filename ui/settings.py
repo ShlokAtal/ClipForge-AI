@@ -1,5 +1,4 @@
 """Application settings and environment diagnostics."""
-from pathlib import Path
 import streamlit as st
 
 
@@ -29,4 +28,7 @@ def render_settings(*, app_dir, config, videos, inventory_error, subtitle_dir, o
     st.markdown('<div class="cf-section">Configured folders</div>', unsafe_allow_html=True)
     for key, relative in config["paths"].items():
         st.write(("🟢" if (app_dir / relative).is_dir() else "🟠") + f" **{key.title()}** · `{relative}`")
-    st.info("Batch queue management, metadata suggestions, and YouTube upload integration are still planned.")
+    st.info(
+        "Planned: YouTube upload with explicit review, and active-speaker detection "
+        "that combines audio activity with mouth movement."
+    )

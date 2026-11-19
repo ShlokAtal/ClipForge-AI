@@ -6,6 +6,7 @@ import streamlit as st
 from core.subtitle_burner import SubtitleBurnError, burn_subtitles
 from core.transcription import transcribe_to_srt
 from core.video_input import VideoInputError, inspect_video
+from ui.model_cache import get_whisper_model
 from ui.video_source import render_video_source_picker
 
 
@@ -40,7 +41,10 @@ def render_subtitle_studio(*, app_dir, config, videos, inventory_error, subtitle
     timing_offset_ms = st.slider(
         "Subtitle timing adjustment (milliseconds)", -2000, 2000,
         int(config["transcription"].get("timing_offset_ms", 0)), 25,
-        help="Negative values move subtitles earlier; positive values move them later.",
+        help=(
+            "Negative values move subtitles earlier; positive values move them later. "
+            "A non-zero adjustment regenerates subtitles so the change is applied."
+        ),
     )
     preview_bg = "transparent" if background_mode == "Transparent" else (
         f"{background_color}B3" if background_mode == "Semi-transparent box" else background_color
@@ -70,14 +74,25 @@ def render_subtitle_studio(*, app_dir, config, videos, inventory_error, subtitle
         with st.status("Processing video…", expanded=True) as status:
             metadata = inspect_video(video)
             st.write(f"Validated · {metadata['duration_seconds']:.1f}s · {metadata['width']} × {metadata['height']}")
+            must_transcribe = (
+                regenerate or timing_offset_ms != 0 or not srt_path.is_file()
+            )
+            model = None
+            if must_transcribe:
+                model = get_whisper_model(
+                    config["transcription"]["model"],
+                    config["transcription"]["device"],
+                    config["transcription"]["compute_type"],
+                )
             transcription = transcribe_to_srt(
                 video_path=video,
                 output_dir=subtitle_dir,
                 model_name=config["transcription"]["model"],
                 device=config["transcription"]["device"],
                 compute_type=config["transcription"]["compute_type"],
-                skip_existing=config.get("skip_existing_outputs", True) and not regenerate,
+                skip_existing=config.get("skip_existing_outputs", True) and not must_transcribe,
                 timing_offset_ms=timing_offset_ms,
+                model=model,
             )
             st.write(
                 "Using existing SRT." if transcription["skipped"]

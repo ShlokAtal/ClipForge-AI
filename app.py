@@ -19,6 +19,7 @@ from ui.subtitle_studio import render_subtitle_studio
 from ui.smart_clip_finder import render_smart_clip_finder
 from ui.settings import render_settings
 
+APP_VERSION = "1.1.0"
 APP_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = APP_DIR / "config.json"
 
@@ -84,7 +85,7 @@ def main() -> None:
         st.markdown(
             '<div class="cf-brand"><div class="cf-mark">▶</div>'
             '<div><div class="cf-brand-name">ClipForge AI</div>'
-            '<div class="cf-brand-tag">A focused video workspace</div></div></div>',
+            f'<div class="cf-brand-tag">Video workspace · v{APP_VERSION}</div></div></div>',
             unsafe_allow_html=True,
         )
         page = st.radio(
@@ -122,7 +123,7 @@ def main() -> None:
         )
 
     st.divider()
-    st.caption("ClipForge AI · Local-first video tools · Features are clearly marked until implemented.")
+    st.caption(f"ClipForge AI v{APP_VERSION} · Local-first video tools · Your media stays on this computer.")
 
 
 if __name__ == "__main__":

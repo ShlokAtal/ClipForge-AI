@@ -28,8 +28,13 @@ def transcribe_to_srt(
     compute_type="int8",
     skip_existing=True,
     timing_offset_ms=0,
+    model=None,
 ):
-    """Transcribe a video and save its subtitles as an SRT file."""
+    """Transcribe a video and save its subtitles as an SRT file.
+
+    Pass an already-loaded ``model`` to reuse it across calls; otherwise a new
+    WhisperModel is loaded for this request.
+    """
     video_path = Path(video_path)
     output_dir = Path(output_dir)
 
@@ -63,11 +68,12 @@ def transcribe_to_srt(
 
     offset_seconds = timing_offset_ms / 1000.0
 
-    model = WhisperModel(
-        model_name,
-        device=device,
-        compute_type=compute_type,
-    )
+    if model is None:
+        model = WhisperModel(
+            model_name,
+            device=device,
+            compute_type=compute_type,
+        )
 
     segments, info = model.transcribe(
         str(video_path),

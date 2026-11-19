@@ -1,0 +1,7 @@
+# Normalize text files to LF in the repository; Windows checkouts convert
+# them back for local use. Batch scripts keep CRLF, which cmd.exe requires.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.mp4 binary
+*.srt -text

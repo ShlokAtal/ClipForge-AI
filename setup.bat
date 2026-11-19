@@ -21,10 +21,11 @@ if errorlevel 1 (
 echo.
 
 echo [2/5] Checking required Python packages...
-python -c "import streamlit, faster_whisper; print('Streamlit:', streamlit.__version__); print('faster-whisper:', faster_whisper.__version__)"
+python -c "import streamlit, faster_whisper, cv2; print('Streamlit:', streamlit.__version__); print('faster-whisper:', faster_whisper.__version__); print('OpenCV:', cv2.__version__)"
 if errorlevel 1 (
     echo ERROR: A required Python package is unavailable.
-    echo Run diagnose.bat and review its output.
+    echo Install project dependencies with: python -m pip install -r requirements.txt
+    echo Then rerun setup.bat.
     pause
     exit /b 1
 )

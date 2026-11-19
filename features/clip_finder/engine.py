@@ -14,6 +14,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
+from features.smart_reframe import SmartReframeError, build_smart_crop_filter
+
 
 class ClipFinderError(ValueError):
     """Raised when subtitles or clip export settings are invalid."""
@@ -348,6 +350,8 @@ def export_clip(
     crf: int = 23,
     preset: str = "veryfast",
     output_format: str = "original",
+    reframe_mode: str | None = None,
+    overwrite: bool = False,
 ) -> Path:
     """Export a clip in original, vertical Shorts, or landscape format.
 
@@ -381,7 +385,19 @@ def export_clip(
     }:
         raise ClipFinderError("Unsupported FFmpeg preset.")
 
-    video_filter = _get_video_filter(output_format)
+    if reframe_mode is not None and output_format != "original":
+        try:
+            video_filter = build_smart_crop_filter(
+                video,
+                start_seconds,
+                end_seconds - start_seconds,
+                output_format,
+                mode=reframe_mode,
+            )
+        except SmartReframeError as error:
+            raise ClipFinderError(str(error)) from error
+    else:
+        video_filter = _get_video_filter(output_format)
 
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
@@ -402,7 +418,7 @@ def export_clip(
     safe_stem = safe_stem.strip("._") or "clip"
     output = destination / f"{safe_stem}.mp4"
 
-    if output.exists():
+    if output.exists() and not overwrite:
         raise ClipFinderError(
             f"Output already exists; refusing to overwrite: {output}"
         )

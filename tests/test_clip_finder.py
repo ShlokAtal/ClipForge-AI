@@ -89,6 +89,36 @@ class TestClipFinder(unittest.TestCase):
         self.assertEqual(output.name, "highlight_01.mp4")
         self.assertNotEqual(output, video)
 
+
+    @patch("features.clip_finder.engine.build_smart_crop_filter", return_value="scale=1080:1920")
+    @patch("features.clip_finder.engine.shutil.which", return_value="ffmpeg")
+    @patch("features.clip_finder.engine.subprocess.run")
+    def test_smart_reframe_filter_is_used_when_requested(self, run, which, build_filter):
+        video = self.root / "sample.mp4"
+        video.touch()
+
+        def fake_run(command, **kwargs):
+            Path(command[-1]).write_bytes(b"fake video")
+            return Mock(returncode=0, stderr="")
+
+        run.side_effect = fake_run
+        output = export_clip(
+            video,
+            self.root / "out",
+            2,
+            8,
+            output_name="smart_highlight",
+            output_format="shorts",
+            reframe_mode="auto",
+        )
+
+        self.assertTrue(output.is_file())
+        build_filter.assert_called_once_with(
+            video.resolve(), 2, 6, "shorts", mode="auto"
+        )
+        command = run.call_args.args[0]
+        self.assertIn("scale=1080:1920", command)
+
     @patch("features.clip_finder.engine.shutil.which", return_value="ffmpeg")
     @patch("features.clip_finder.engine.subprocess.run")
     def test_export_does_not_overwrite_existing_clip(self, run, which):
